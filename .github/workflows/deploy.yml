@@ -54,4 +54,4 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: movie-gold-v1/build
+          publish_dir: frontend/movie-gold-v1/build
