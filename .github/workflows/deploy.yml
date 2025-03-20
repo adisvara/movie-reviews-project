@@ -13,19 +13,45 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 🔹 Setup Java and Build Spring Boot Backend
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Use Temurin OpenJDK
+          java-version: '17'       # Change to match your project
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build Spring Boot Backend
+        run: |
+          cd movies
+          mvn clean install -DskipTests
+
+      # 🔹 Setup Node.js and Build React Frontend
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: cd movies && npm install
+      - name: Install React Dependencies
+        run: |
+          cd frontend/movie-gold-v1
+          npm install
 
-      - name: Build project
-        run: cd movies && npm run build
+      - name: Build React App
+        run: |
+          cd frontend/movie-gold-v1
+          npm run build
 
-      - name: Deploy to GitHub Pages
+      # 🔹 Deploy Frontend to GitHub Pages
+      - name: Deploy React to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: movies/build
+          publish_dir: movie-gold-v1/build
